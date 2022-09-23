@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+management:
+  endpoint.gateway.enabled: true
+  endpoints.web.exposure.include: gateway
+
+spring:
+  application.name: test-service-gwy
+  cloud:
+    gateway:
+      discovery.locator.enabled: true
+      routes:
+        - id: BMP-MASTER-DATA-SERVICE
+          uri: lb://BMP-MASTER-DATA-SERVICE
+          predicates:
+            Path=/mds/**
+          filters:
+            - AuthFilter
+        - id: service-users-sign-in
+          uri: lb://service-users
+          predicates:
+            - Path=/users/signIn,/users/signIn
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
